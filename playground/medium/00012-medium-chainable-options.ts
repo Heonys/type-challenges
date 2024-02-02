@@ -39,9 +39,12 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Chainable = {
-  option(key: string, value: any): any
-  get(): any
+type Chainable<T = {}> = {
+  option: <K extends string, V>(
+    key: K extends keyof T ? never : K,
+    value: V
+  ) => Chainable<Omit<T, K> & Record<K, V>>
+  get: () => T
 }
 
 /* _____________ 테스트 케이스 _____________ */
