@@ -32,11 +32,20 @@
   ```
 
   > GitHub에서 보기: https://tsch.js.org/9/ko
+
 */
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type DeepReadonly<T> = any
+type DeepReadonly<T> = {
+  readonly [P in keyof T]: T[P] extends Function
+    ? T[P]
+    : DeepReadonly<T[P]>
+}
+
+type AllKey<T extends object> = {
+  [K in keyof T]: T[K] extends object ? K | AllKey<T[K]> : K
+}[keyof T]
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

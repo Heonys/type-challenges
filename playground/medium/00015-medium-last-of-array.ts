@@ -24,7 +24,14 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Last<T extends any[]> = any
+type Last<T extends any[]> = T['length'] extends 1
+  ? T[0]
+  : T extends [T[0], ...infer Rest]
+    ? Last<Rest>
+    : never
+
+// type Last<T extends any[]> = T extends [...any, infer L] ? L : T
+// type Last<T extends any[]> = [any, ...T][T["length"]];
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
