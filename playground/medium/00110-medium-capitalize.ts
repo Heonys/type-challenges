@@ -18,7 +18,38 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type MyCapitalize<S extends string> = any
+type ToUpperCase = {
+  'a': 'A'
+  'b': 'B'
+  'c': 'C'
+  'd': 'D'
+  'e': 'E'
+  'f': 'F'
+  'g': 'G'
+  'h': 'H'
+  'i': 'I'
+  'j': 'J'
+  'k': 'K'
+  'l': 'L'
+  'm': 'M'
+  'n': 'N'
+  'o': 'O'
+  'p': 'P'
+  'q': 'Q'
+  'r': 'R'
+  's': 'S'
+  't': 'T'
+  'u': 'U'
+  'v': 'V'
+  'w': 'W'
+  'x': 'X'
+  'y': 'Y'
+  'z': 'Z'
+}
+
+type MyCapitalize<T extends string> = T extends `${infer First extends keyof ToUpperCase}${infer Rest}`
+  ? `${ToUpperCase[First]}${Rest}`
+  : T
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
