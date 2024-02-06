@@ -20,7 +20,15 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Absolute<T extends number | string | bigint> = any
+type Absolute<T extends number | string | bigint> = T extends string
+  ? T extends `${infer Sign}${infer Rest}`
+    ? Sign extends '-'
+      ? Rest
+      : `${Sign}${Rest}`
+    : ''
+  : Absolute<`${T}`>
+
+// type Absolute<T extends number | string | bigint> = `${T}` extends `-${infer R}` ? R : `${T}`
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

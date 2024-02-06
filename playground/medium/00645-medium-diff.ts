@@ -12,7 +12,10 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Diff<O, O1> = any
+type Computed<T> = { [K in keyof T]: T[K] }
+type Diff<O, O1> = Computed<Omit<O, keyof O1> & Omit<O1, keyof O>>
+
+// type Diff<O, O1> = Omit<O & O1, keyof (O1 | O)>
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

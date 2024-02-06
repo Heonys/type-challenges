@@ -28,7 +28,16 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Merge<F, S> = any
+type Computed<T> = { [K in keyof T]: T[K] }
+type Merge<F, S> = Computed<Omit<F, keyof S> & S>
+
+// type Merge<F, S> = {
+//   [K in keyof F | keyof S]: K extends keyof S
+//     ? S[K]
+//     : K extends keyof F
+//       ? F[K]
+//       : never
+// }
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
