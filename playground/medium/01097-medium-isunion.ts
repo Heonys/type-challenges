@@ -20,7 +20,27 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type IsUnion<T> = any
+type NotEqual<X, Y> = true extends Equal<X, Y> ? false : true
+
+type IsUnion<T, S = T> = [T] extends [never]
+  ? false
+  : S extends S
+    ? NotEqual<T, S>
+    : never
+
+// type IsUnion<T, S = T> = Equal<T extends T
+//   ? S extends T
+//     ? false
+//     : true
+//   : never, boolean>
+
+// type IsUnion<T, B = T> = [T] extends [never]
+//   ? false
+//   : T extends B
+//     ? [B] extends [T]
+//         ? false
+//         : true
+//     : never
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

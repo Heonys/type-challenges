@@ -23,7 +23,16 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type RemoveIndexSignature<T> = any
+type RemoveIndexSignature<T> = {
+  [K in keyof T as string extends K
+    ? never
+    : number extends K
+      ? never
+      : symbol extends K
+        ? never
+        : K
+  ]: T[K]
+}
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

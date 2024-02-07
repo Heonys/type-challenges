@@ -22,7 +22,9 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type IsNever<T> = any
+type IsNever<T> = [T] extends [never] ? true : false
+
+// type IsNever<T> = Equal<never, T>
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

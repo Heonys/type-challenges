@@ -23,7 +23,16 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type AnyOf<T extends readonly any[]> = any
+type IsTruthy<T> = T extends (0 | '' | false | [] | { [K in any]: never } | null | undefined) ? never : true
+type IsFalse<T> = [IsTruthy<T>] extends [never] ? false : IsTruthy<T>
+
+type AnyOf<T extends readonly any[]> = T extends []
+  ? false
+  : IsFalse<T[number]>
+
+// type AnyOf<T extends any[]> = T[number] extends 0 | '' | false | [] | { [key: string]: never } | null | undefined
+//   ? false
+//   : true
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
