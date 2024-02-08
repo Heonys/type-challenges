@@ -30,7 +30,16 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type PercentageParser<A extends string> = any
+// type PercentageParser<A extends string> =
+// A extends `${infer O extends '+' | '-' | ""}${infer N extends number}${infer P extends '%'}`
+//   ? [O, N, P]
+//   : ['', '', '']
+
+type CheckPrefix<T> = T extends '+' | '-' ? T : never
+type CheckSuffix<T> = T extends `${infer R}%` ? [R, '%'] : [T, '']
+type PercentageParser<A extends string> = A extends `${CheckPrefix<infer R1>}${infer R2}`
+  ? [R1, ...CheckSuffix<R2>]
+  : ['', ...CheckSuffix<A>]
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
