@@ -23,7 +23,13 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type ObjectEntries<T> = any
+type ObjectEntries<T> = {
+  [K in keyof T]-?: [K, T[K] extends undefined ? undefined : Required<T>[K] ]
+}[keyof T]
+
+// type ObjectEntries<T, U = Required<T>> = {
+//   [K in keyof U]: [K, U[K] extends never ? undefined : U[K]]
+// }[keyof U]
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
@@ -32,6 +38,11 @@ interface Model {
   name: string
   age: number
   locations: string[] | null
+}
+interface Model2 {
+  name?: string
+  age?: number
+  locations?: string[] | null
 }
 
 type ModelEntries = ['name', string] | ['age', number] | ['locations', string[] | null]
