@@ -21,7 +21,15 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type FlattenDepth = any
+type Digit = [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+type FlattenDepth<T extends any[], D extends number = 1> = D extends 0
+  ? T
+  : T extends [infer First, ...infer Rest]
+    ? First extends any[]
+      ? [...FlattenDepth<First, Digit[D]>, ...FlattenDepth<Rest, D>]
+      : [First, ...FlattenDepth<Rest, D>]
+    : []
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

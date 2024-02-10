@@ -16,7 +16,19 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type BEM<B extends string, E extends string[], M extends string[]> = any
+// type BEM<B extends string, E extends string[], M extends string[]> = M extends []
+//   ? `${B}__${E[0]}`
+//   : {
+//       [K in M[number]]: E[0] extends string
+//         ? `${B}__${E[0]}--${K}`
+//         : `${B}--${K}`
+//     }[M[number]]
+
+type IsNever<T> = [T] extends [never] ? true : false
+type IsUnion<U> = IsNever<U> extends true ? '' : U
+
+type BEM<B extends string, E extends string[], M extends string[]> =
+  `${B}${IsUnion<`__${E[number]}`>}${IsUnion<`--${M[number]}`>}`
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

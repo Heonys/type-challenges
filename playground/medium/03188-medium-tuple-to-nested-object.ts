@@ -18,7 +18,15 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type TupleToNestedObject<T, U> = any
+type TupleToNestedObject<T, U> = T extends [infer R1 extends PropertyKey, ...infer R2]
+  ? R2['length'] extends 0
+    ? Record<R1, U>
+    : Record<R1, TupleToNestedObject<R2, U>>
+  : U
+
+// type TupleToNestedObject<T, U> = T extends [infer R1 extends PropertyKey, ...infer R2]
+//   ? Record<R1, TupleToNestedObject<R2, U>>
+//   : U
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
