@@ -21,7 +21,21 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Fibonacci<T extends number> = any
+type Fibonacci<
+  T extends number,
+  N extends any[] = [1],
+  Prev extends any[] = [],
+  Cur extends any[] = [1],
+> = N['length'] extends T
+  ? Cur['length']
+  : Fibonacci<T, [...N, 1], Cur, [...Prev, ...Cur]>
+
+// Fibonacci<5>
+// 5  [1]          [],      [1]
+// 5, [1,1],       [1],     [1]
+// 5, [1,1,1],     [1],    [1,1]
+// 5, [1,1,1,1]    [1,1],  [1,1,1]
+// 5  [1,1,1,1,1]  [1,1,1] [1,1,1,1,1]
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

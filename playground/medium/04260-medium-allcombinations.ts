@@ -19,7 +19,26 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type AllCombinations<S> = any
+type String2Union<T extends string> = T extends `${infer First}${infer Rest}`
+  ? First | String2Union<Rest>
+  : never
+
+type AllCombinations<
+  T extends string,
+  S extends string = String2Union<T>,
+> = [S] extends [never]
+  ? ''
+  : '' | {
+    [K in S]: `${K}${AllCombinations<never, Exclude<S, K>>}`
+  }[S]
+
+/*
+MEMO: 문자열 템플릿 리터럴에서 유니온타입은 분배법칙이 일어난다
+      `${A}${AllCombinations<never, "B">}`
+  ->   "A" | `${A}${AllCombinations<never, "B">}`
+  ->   "A" | `${A}${B}${AllCombinations<never, never>}`
+  ->   "A" | "AB"
+*/
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
