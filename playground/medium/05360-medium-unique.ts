@@ -20,7 +20,17 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Unique<T> = any
+type Includes<T extends any[], S> = T extends [infer First, ...infer Rest]
+  ? Equal<First, S> extends true
+    ? true
+    : Includes<Rest, S>
+  : false
+
+type Unique<T extends any[], U extends any[] = []> = T extends [infer First, ...infer Rest]
+  ? Includes<U, First> extends true
+    ? Unique<Rest, U>
+    : Unique<Rest, [...U, First]>
+  : U
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

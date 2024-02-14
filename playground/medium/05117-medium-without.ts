@@ -18,7 +18,13 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Without<T, U> = any
+type ToUnion<T> = T extends any[] ? T[number] : T
+
+type Without<T extends any[], U> = T extends [infer First, ...infer Rest]
+  ? First extends ToUnion<U>
+    ? Without<Rest, U>
+    : [First, ...Without<Rest, U>]
+  : T
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

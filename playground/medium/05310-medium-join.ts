@@ -19,7 +19,11 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Join<T, U> = any
+type Join<T extends any[], U extends string | number> = T extends [infer First extends string, ...infer Rest]
+  ? Rest['length'] extends 0
+    ? `${First}`
+    : `${First}${U}${Join<Rest, U>}`
+  : ''
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
