@@ -16,7 +16,24 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type NumberRange<L, H> = any
+// type NumberToTuple<T, R extends any[] = [] > = R['length'] extends T
+//   ? R
+//   : NumberToTuple<T, [...R, 1]>
+
+// type NumberRange<
+//   Start,
+//   End,
+//   Cur extends any[] = NumberToTuple<Start>,
+//   R extends any[] = [],
+// > = Cur['length'] extends End
+//   ? R[number] | Cur['length']
+//   : NumberRange<Start, End, [...Cur, 1], [...R, Cur['length']]>
+
+type ZeroToN<T, R extends any[] = []> = R['length'] extends T
+  ? R[number] | T
+  : ZeroToN<T, [...R, R['length']]>
+
+type NumberRange<S, E> = S | Exclude<ZeroToN<E>, ZeroToN<S>>
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

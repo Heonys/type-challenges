@@ -19,7 +19,26 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type CheckRepeatedChars<T extends string> = any
+type Search<T extends any[], S> = T extends [infer First, ...infer Rest]
+  ? First extends S
+    ? true
+    : Search<Rest, S>
+  : false
+
+type CheckRepeatedChars<
+  T extends string,
+  R extends any[] = [],
+> = T extends `${infer First}${infer Rest}`
+  ? Search<R, First> extends true
+    ? true
+    : CheckRepeatedChars<Rest, [...R, First]>
+  : false
+
+// type CheckRepeatedChars<T extends string> = T extends `${infer F}${infer R}`
+//   ? R extends `${string}${F}${string}`
+//     ? true
+//     : CheckRepeatedChars<R>
+//   : false
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

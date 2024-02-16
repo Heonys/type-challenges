@@ -18,7 +18,13 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Combination<T extends string[]> = any
+type Combination<
+  T extends any[],
+  S = T[number],
+  U = S,
+> = S extends string
+  ? S | `${S} ${Combination<never, Exclude<U, S>>}`
+  : never
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

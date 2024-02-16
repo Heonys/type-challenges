@@ -20,7 +20,24 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Subsequence<T extends any[]> = any
+// type Subsequence<
+//   T extends any[],
+//   S extends number = T[number],
+//   U extends number = S,
+// > = [] | {
+//   [K in S]: [K] | [K, ...Subsequence<never, Exclude<U, K>>]
+// }[S]
+
+type Subsequence<
+  T extends any[],
+  S extends any[] = [],
+> = T extends [infer First, ...infer Rest]
+  ? Subsequence<Rest, S | [...S, First]>
+  : S
+
+// type Subsequence<T> = T extends [infer One, ...infer Rest]
+//   ? [...Subsequence<Rest>] | [One, ...Subsequence<Rest>]
+//   : []
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
