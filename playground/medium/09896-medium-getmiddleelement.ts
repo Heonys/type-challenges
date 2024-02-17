@@ -22,7 +22,19 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type GetMiddleElement<T> = any
+// type GetMiddleElement<T extends any[]> = T extends [infer First, ...infer Mid, infer Last]
+//   ? Mid['length'] extends 0
+//     ? [First, Last]
+//     : Mid['length'] extends 1
+//       ? [Mid[0]]
+//       : GetMiddleElement<Mid>
+//   : T['length'] extends 0 ? [] : [T[0]]
+
+type GetMiddleElement<T extends any[]> = T['length'] extends 0 | 1 | 2
+  ? T
+  : T extends [any, ...infer Mid, any]
+    ? GetMiddleElement<Mid>
+    : never
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

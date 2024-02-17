@@ -19,17 +19,11 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Search<T extends any[], S> = T extends [infer First, ...infer Rest]
-  ? First extends S
-    ? true
-    : Search<Rest, S>
-  : false
-
 type CheckRepeatedChars<
   T extends string,
   R extends any[] = [],
 > = T extends `${infer First}${infer Rest}`
-  ? Search<R, First> extends true
+  ? First extends R[number]
     ? true
     : CheckRepeatedChars<Rest, [...R, First]>
   : false

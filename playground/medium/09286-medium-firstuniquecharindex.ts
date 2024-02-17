@@ -12,7 +12,16 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type FirstUniqueCharIndex<T extends string> = any
+type FirstUniqueCharIndex<
+  T extends string,
+  R extends any[] = [],
+> = T extends `${infer First}${infer Rest}`
+  ? First extends R[number]
+    ? FirstUniqueCharIndex<Rest, R>
+    : Rest extends `${string}${First}${string}`
+      ? FirstUniqueCharIndex<Rest, [...R, First]>
+      : R['length']
+  : -1
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

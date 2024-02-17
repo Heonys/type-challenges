@@ -12,7 +12,15 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type FindEles<T extends any[]> = any
+type FindEles<
+  T extends any[],
+  R extends any[] = [],
+  Prev extends any[] = [],
+> = T extends [infer First, ...infer Rest]
+  ? First extends Rest[number] | Prev[number]
+    ? FindEles<Rest, R, [...Prev, First]>
+    : FindEles<Rest, [...R, First], [...Prev, First]>
+  : R
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

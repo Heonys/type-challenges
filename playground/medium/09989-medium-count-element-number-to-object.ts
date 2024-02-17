@@ -33,7 +33,21 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type CountElementNumberToObject<T> = any
+type Flatten<T> = T extends [infer F, ...infer R]
+  ? F extends any[]
+    ? [...Flatten<F>, ...Flatten<R>]
+    : [F, ...Flatten<R>]
+  : []
+
+type Count<T extends any[], S, R extends any[] = []> = T extends [infer First, ...infer Rest]
+  ? First extends S
+    ? Count<Rest, S, [...R, 1]>
+    : Count<Rest, S, R>
+  : R['length']
+
+type CountElementNumberToObject<T, S extends any[] = Flatten<T>> = {
+  [K in S[number]]: Count<S, K>
+}
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
