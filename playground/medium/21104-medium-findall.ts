@@ -12,7 +12,38 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type FindAll<T extends string, P extends string> = any
+// type StringToLength<T, R extends any[] = []> = T extends `${string}${infer Rest}`
+//   ? StringToLength<Rest, [...R, 1]>
+//   : R['length']
+
+// type FindAll<
+//   T extends string,
+//   P extends string,
+//   Cur extends any[] = [],
+//   Prev extends string = '',
+//   R extends any[] = [],
+// > = P extends ''
+//   ? []
+//   : T extends `${infer First}${infer Rest}`
+//     ? Prev extends `${infer F}${P}`
+//       ? FindAll<Rest, P, [...Cur, 1], `${Prev}${First}`, [...R, StringToLength<F>]>
+//       : FindAll<Rest, P, [...Cur, 1], `${Prev}${First}`, R>
+//     : Prev extends `${infer F}${P}`
+//       ? [...R, StringToLength<F>]
+//       : R
+
+type FindAll<
+  T extends string,
+  P extends string,
+  L extends any[] = [],
+> = P extends ''
+  ? []
+  : T extends `${string}${infer Rest}`
+    ? [
+        ...(T extends `${P}${string}` ? [L['length']] : []),
+        ...FindAll<Rest, P, [...L, 1]>,
+      ]
+    : []
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

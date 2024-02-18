@@ -22,7 +22,14 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type All = any
+type All<T extends any[], U> = T extends [infer First, ...infer Rest]
+  ? Equal<First, U> extends true
+    ? All<Rest, U>
+    : false
+  : true
+
+// type All<T extends any[], U> = Equal<T[number], U>
+// type All<T extends any[], N> = T[number] extends N ? true : false
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

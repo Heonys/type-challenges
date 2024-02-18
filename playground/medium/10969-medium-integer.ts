@@ -12,7 +12,11 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Integer<T> = any
+type Integer<T extends number> = `${T}` extends `${number}.${number}`
+  ? never
+  : number extends T ? never : T
+
+// type Integer<T extends number> = `${T}` extends `${bigint}` ? T : never
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

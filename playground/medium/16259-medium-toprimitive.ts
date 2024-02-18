@@ -37,7 +37,23 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type ToPrimitive = any
+// type ToPrimitive<T> = {
+//   [K in keyof T]: T[K] extends number
+//     ? number
+//     : T[K] extends boolean
+//       ? boolean
+//       : T[K] extends string
+//         ? string
+//         : T[K] extends Function
+//           ? Function
+//           : ToPrimitive<T[K]>
+// }
+
+type ToPrimitive<T> = T extends Function
+  ? Function
+  : T extends object ? {
+    [K in keyof T]: ToPrimitive<T[K]>
+  } : T extends { valueOf: () => infer R } ? R : never
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
