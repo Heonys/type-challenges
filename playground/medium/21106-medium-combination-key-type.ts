@@ -14,7 +14,9 @@
 /* _____________ 여기에 코드 입력 _____________ */
 
 // 实现 Combs
-type Combs<T extends any[]> = any
+type Combs<T extends any[]> = T extends [infer First, ...infer Rest]
+  ? `${First & string} ${Rest[number] & string}` | Combs<Rest>
+  : never
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

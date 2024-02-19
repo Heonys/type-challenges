@@ -9,25 +9,19 @@
 
   For example:
 
-  ```ts
-  PermutationsOfTuple<[1, number, unknown]>
-  /**
-   * Should return:
-   * | [1, number, unknown]
-   * | [1, unknown, number]
-   * | [number, 1, unknown]
-   * | [unknown, 1, number]
-   * | [number, unknown, 1]
-   * | [unknown, number ,1]
-   */
-  ```
-
   > GitHub에서 보기: https://tsch.js.org/21220/ko
 */
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type PermutationsOfTuple<T extends unknown[]> = any
+type PermutationsOfTuple<
+  T extends unknown[],
+  Prev extends any[] = [],
+> = T extends [infer First, ...infer Rest]
+  ? [First, ...PermutationsOfTuple<[...Rest, ...Prev]>] | (Rest extends [] ? never : PermutationsOfTuple<Rest, [...Prev, First]>)
+  : []
+
+type a = PermutationsOfTuple<[1, 2, 3]>
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect, ExpectFalse } from '@type-challenges/utils'

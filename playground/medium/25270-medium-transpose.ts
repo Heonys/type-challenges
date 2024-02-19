@@ -18,7 +18,14 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Transpose<M extends number[][]> = any
+type Transpose<
+  M extends number[][],
+  R = M extends [] ? [] : M[0],
+> = {
+  [X in keyof R]: {
+    [Y in keyof M]: X extends keyof M[Y] ? M[Y][X] : never
+  }
+}
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
