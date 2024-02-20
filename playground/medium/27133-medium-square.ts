@@ -12,7 +12,31 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Square<N extends number> = number
+type Absolute<T extends number> = `${T}` extends `-${infer R extends number}` ? R : T
+
+type SplitZero<T extends number, U extends string = ''> =
+  `${T}` extends `${infer R extends number}0`
+    ? SplitZero<R, `${U}00`>
+    : [T, U]
+
+type Number2Tuple<N, R extends any[] = []> = R['length'] extends N
+  ? R
+  : Number2Tuple<N, [...R, 1]>
+
+type SquareTuple<
+  N extends number,
+  Cur extends any[] = [],
+  R extends any[] = [],
+  S extends any[] = Number2Tuple<N>,
+> = Cur['length'] extends N
+  ? R
+  : SquareTuple<N, [...Cur, 1], [...R, ...S]>
+
+type Square<
+  N extends number,
+  S extends [number, string] = SplitZero<N>,
+  R extends any[] = SquareTuple<Absolute<S[0]>>,
+> = `${R['length']}${S[1]}` extends `${infer R extends number}` ? R : never
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

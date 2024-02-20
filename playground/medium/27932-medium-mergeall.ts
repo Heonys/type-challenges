@@ -22,7 +22,22 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type MergeAll<XS> = any
+type MergeAll<
+  XS extends object[],
+  U = XS[number],
+  Keys extends PropertyKey = U extends U ? keyof U : never,
+> = {
+  [K in Keys]: U extends U ? U[K & keyof U] : never
+}
+/*
+MergeAll<[{ a: 1, b: 2 }, { a: 2 }, { c: 3 }]> 라고 가정할때
+U = { a: 1, b: 2 } | { a: 2 } | { c: 3 }
+Keys = a | b | c
+U와 Keys는 각각 이렇게 되므로
+K는 맵드타입에서 a,b,c를 순회하고 U extends U 에서 분배법칙이 일어나서 U의 각각의 유니온을 순회하면서
+U[K & keyof U] 부분에서 K속성을 가진 key값을 찾아서 유니온 으로 합친다
+
+*/
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

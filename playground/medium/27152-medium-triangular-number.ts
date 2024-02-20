@@ -12,7 +12,13 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Triangular<N extends number> = any
+type Triangular<
+  N extends number,
+  Cur extends any[] = [],
+  R extends any[] = [],
+> = Cur['length'] extends N
+  ? R['length']
+  : Triangular<N, [...Cur, 1], [...R, ...Cur, 1]>
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

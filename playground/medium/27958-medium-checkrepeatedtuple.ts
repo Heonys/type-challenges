@@ -19,7 +19,23 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type CheckRepeatedTuple<T extends unknown[]> = any
+// type Includes<T, S> = T extends [infer First, ...infer Rest]
+//   ? Equal<S, First> extends true
+//     ? true
+//     : Includes<Rest, S>
+//   : false
+
+// type CheckRepeatedTuple<T extends unknown[]> = T extends [infer First, ...infer Rest]
+//   ? Includes<Rest, First> extends true
+//     ? true
+//     : CheckRepeatedTuple<Rest>
+//   : false
+
+type CheckRepeatedTuple<T extends unknown[]> = T extends [infer First, ...infer Rest]
+  ? First extends Rest[number]
+    ? true
+    : CheckRepeatedTuple<Rest>
+  : false
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

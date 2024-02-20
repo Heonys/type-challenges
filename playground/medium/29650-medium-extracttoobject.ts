@@ -20,7 +20,16 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type ExtractToObject<T, U> = any
+// type ExtractToObject<T, U extends keyof T, S = T[U] > = {
+//   [K in keyof T as K extends U
+//     ? keyof S
+//     : K
+//   ]: K extends U
+//     ? S[keyof S]
+//     : T[K]
+// }
+
+type ExtractToObject<T, U extends keyof T> = Omit<Omit<T, U> & T[U], never>
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
