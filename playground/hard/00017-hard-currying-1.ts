@@ -28,7 +28,31 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-declare function Currying(fn: any): any
+// 서브타입으로 튜플의 레이블 유지
+type FirstTuple<T extends any[]> = T extends [any, ...infer Rest]
+  ? T extends [...infer First, ...Rest]
+    ? First
+    : never
+  : never
+
+type Curried<T> = T extends (...args: infer Args) => infer Return
+  ? Args['length'] extends 0 | 1
+    ? T
+    : Args extends [any, ...infer Rest]
+      ? (...args: FirstTuple<Args>) => Curried<(...args: Rest) => Return>
+      : never
+  : never
+
+// 좀더 단순하지만 튜플의 레이블 유지 못함
+// type Curried<T> = T extends (...args: infer Args) => infer Return
+//   ? Args['length'] extends 0 | 1
+//     ? T
+//     : Args extends [infer First, ...infer Rest]
+//       ? (args: First) => Curried<(...args: Rest) => Return>
+//       : never
+//   : never
+
+declare function Currying<F extends Function>(fn: F): Curried<F>
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

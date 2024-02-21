@@ -12,7 +12,13 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type IsOdd<T extends number> = any
+type Odd = 1 | 3 | 5 | 7 | 9
+
+type IsOdd<T extends number> = `${T}` extends `${number | ''}${Odd}`
+  ? true
+  : false
+
+type Test = IsOdd<3>
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

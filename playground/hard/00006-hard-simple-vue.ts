@@ -46,16 +46,23 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-declare function SimpleVue(options: any): any
+type Computed<T> = {
+  [K in keyof T]: T[K] extends (...args: any[]) => any[] ? ReturnType<T[K]> : T[K]
+}
+
+declare function SimpleVue<D, C, M>(options: {
+  data: () => D
+  computed: C
+  methods: M
+} & ThisType<D & M & Computed<C>>
+): any
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
 
 SimpleVue({
   data() {
-    // @ts-expect-error
     this.firstname
-    // @ts-expect-error
     this.getRandom()
     // @ts-expect-error
     this.data()

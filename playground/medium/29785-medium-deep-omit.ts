@@ -30,7 +30,11 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type DeepOmit = any
+type DeepOmit<T, S extends string> = S extends `${infer First}.${infer Rest}`
+  ? {
+      [K in keyof T]: K extends First ? DeepOmit<T[K], Rest> : T[K]
+    }
+  : Omit<T, S>
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
