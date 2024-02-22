@@ -18,7 +18,22 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type CapitalizeWords<S extends string> = any
+// type CapitalizeWords<S extends string, R extends string = ''> =
+//   S extends `${string}${' ' | '.' | ','}${infer Rest}`
+//     ? S extends `${infer Head}${Rest}`
+//       ? CapitalizeWords<Rest, `${R}${Capitalize<Head>}`>
+//       : never
+//     : `${R}${Capitalize<S>}`
+
+type CapitalizeWords<S, R extends string = ''> = S extends `${infer First}${infer Rest}`
+  ? Uppercase<First> extends Lowercase<First>
+    ? CapitalizeWords<Capitalize<Rest>, `${R}${First}`>
+    : CapitalizeWords<Rest, `${R}${First}`>
+  : Capitalize<R>
+
+/*
+Uppercase와 Lowercase가 같은 경우는 알파벳이 아니라고 판단하는 핵심 아이디어
+*/
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

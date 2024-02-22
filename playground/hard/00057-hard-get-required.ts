@@ -18,7 +18,19 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type GetRequired<T> = any
+// type GetRequired<T> = {
+//   [K in keyof T as undefined extends T[K]
+//     ? never
+//     : K
+//   ]: T[K]
+// }
+
+type GetRequired<T> = {
+  [K in keyof T as T[K] extends Required<T>[K]
+    ? K
+    : never
+  ]: T[K]
+}
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
