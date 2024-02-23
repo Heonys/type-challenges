@@ -33,7 +33,9 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Get<T, K> = string
+type Get<T, K> = K extends `${infer R1}.${infer R2}`
+  ? K extends keyof T ? T[K] : R1 extends keyof T ? Get<T[R1], R2> : never
+  : K extends keyof T ? T[K] : never
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

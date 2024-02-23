@@ -42,7 +42,11 @@ type ControlsMap = {
   p: 'pointer'
 }
 
-type ParsePrintFormat = any
+type ParsePrintFormat<T> = T extends `${string}%${infer R1}${infer R2}`
+  ? R1 extends keyof ControlsMap
+    ? [ControlsMap[R1], ...ParsePrintFormat<R2>]
+    : ParsePrintFormat<R2>
+  : []
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

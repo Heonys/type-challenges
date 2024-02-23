@@ -19,7 +19,21 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type CamelCase<S extends string> = any
+// type CamelCase<
+//   S extends string,
+//   L extends string = Lowercase<S>,
+//   R extends string = '',
+// > = L extends `${infer First}_${infer Rest1}`
+//   ? Rest1 extends `_${infer Rest2}`
+//     ? CamelCase<never, Capitalize<Rest2>, `${R}${First}_`>
+//     : CamelCase<never, Capitalize<Rest1>, `${R}${First}`>
+//   : `${R}${L}`
+
+type CamelCase<S extends string> = S extends `${infer F}_${infer R1}${infer R2}`
+  ? Uppercase<R1> extends Lowercase<R1>
+    ? `${Lowercase<F>}_${CamelCase<`${R1}${R2}`>}`
+    : `${Lowercase<F>}${Uppercase<R1>}${CamelCase<R2>}`
+  : Lowercase<S>
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

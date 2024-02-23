@@ -14,7 +14,9 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type IsAny<T> = any
+// type IsAny<T> = Equal<T, any> extends true ? true : false
+
+type IsAny<T> = 0 extends (1 & T) ? true : false
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
