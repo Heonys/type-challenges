@@ -38,7 +38,20 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type DeepObjectToUniq<O extends object> = any
+type DeepObjectToUniq<O extends object> = {
+  [K in keyof O]: O[K] extends object
+    ? O[K] & { [_uniq: symbol]: [O, K] }
+    : O[K]
+} & { [_uniq: symbol]: O }
+
+/*
+type A = { name: 'A' }
+type B = { name: 'A' } & { [uniq: symbol]: B }
+
+ A랑 B는 서로 다르지만,
+서로에게 할당이 가능하며 A["name"]은 B["name"]과 같다
+즉, 객체를 고유하게 만들면서 동시에 기존의 값들은 유지한다
+*/
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, IsFalse, IsTrue } from '@type-challenges/utils'

@@ -31,7 +31,30 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Enum<T extends readonly string[], N extends boolean = false> = any
+type IndexOf<
+  T extends readonly any[],
+  S,
+  R extends any[] = [],
+> = T extends readonly [infer First, ...infer Rest]
+  ? First extends S
+    ? R['length']
+    : IndexOf<Rest, S, [...R, 1]>
+  : never
+
+type Enum<
+  T extends readonly any[],
+  N extends boolean = false,
+> = {
+  readonly [K in T[number] as Capitalize<K>]: N extends false ? K : IndexOf<T, K>
+}
+
+// type TupleKeys<T extends readonly unknown[]> = T extends readonly [any, ...infer Tail]
+//   ? TupleKeys<Tail> | Tail['length']
+//   : never
+
+//   type Enum<T extends readonly string[], N extends boolean = false> = {
+//     readonly [K in TupleKeys<T> as Capitalize<T[K]>]: N extends true ? K : T[K]
+//   }
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

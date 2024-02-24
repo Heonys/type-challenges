@@ -21,7 +21,13 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Format<T extends string> = any
+type Format<T extends string> = T extends `${string}%%${infer Rest}`
+  ? Format<Rest>
+  : T extends `${string}%${infer RF}${infer R}`
+    ? RF extends 'd'
+      ? (args: number) => Format<R>
+      : (args: string) => Format<R>
+    : string
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
