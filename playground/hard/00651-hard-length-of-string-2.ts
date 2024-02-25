@@ -18,7 +18,9 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type LengthOfString<S extends string> = number
+type LengthOfString<S extends string, R extends any[] = []> = S extends `${string}${infer R2}`
+  ? LengthOfString<R2, [...R, 1]>
+  : R['length']
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, IsTrue } from '@type-challenges/utils'

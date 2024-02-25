@@ -25,7 +25,6 @@
   UnionToTuple<'any' | 'a'> // ['a','any'] | ['any','a'], which is incorrect
   ```
 
-
   And a union could collapes, which means some types could absorb (or be absorbed by) others and there is no way to prevent this absorption. See the following examples:
   ```ts
   Equal<UnionToTuple<any | 'a'>,       UnionToTuple<any>>         // will always be a true
@@ -39,7 +38,22 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type UnionToTuple<T> = any
+type UnionToIntersection<T> = (T extends T
+  ? (arg: T) => void
+  : never
+) extends (arg: infer R) => void
+  ? R
+  : never
+
+type LastUnion<T> = (
+  UnionToIntersection<T extends T ? (arg: T) => void : never>
+) extends (arg: infer R) => void
+  ? R
+  : never
+
+type UnionToTuple<T, L = LastUnion<T>> = [T] extends [never]
+  ? []
+  : [...UnionToTuple<Exclude<T, L>>, L]
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

@@ -32,7 +32,15 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-declare function join(delimiter: any): (...parts: any[]) => any
+type Join<D extends string, T extends string[]> = T extends [infer First extends string, ...infer Rest extends string[]]
+  ? `${First}${D}${Join<D, Rest>}`
+  : ''
+
+declare function join<D extends string>(delimiter: D): <T extends string[]>(...parts: T) => '' extends D
+  ? Join<D, T>
+  : Join<D, T> extends `${infer Rest}${D}`
+    ? Rest
+    : ''
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
