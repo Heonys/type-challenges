@@ -27,7 +27,13 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Camelize<T> = any
+type SnakeToCamel<T extends string, R extends string = ''> = T extends `${infer F}_${infer L}`
+  ? SnakeToCamel<Capitalize<L>, `${R}${F}`>
+  : `${R}${T}`
+
+type Camelize<T extends object> = T extends any[]
+  ? { [K in keyof T]: T[K] extends object ? Camelize<T[K]> : T[K] }
+  : { [K in keyof T as SnakeToCamel<K & string>]: T[K] extends object ? Camelize<T[K]> : T[K] }
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

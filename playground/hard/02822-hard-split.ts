@@ -18,7 +18,21 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Split<S extends string, SEP extends string> = any
+type Split<
+  S extends string,
+  SEP extends string = never,
+  R extends any[] = [],
+> = S extends `${infer First}${SEP}${infer Rest}`
+  ? Split<Rest, SEP, [...R, First]>
+  : S extends ''
+    ? R
+    : [...R, S]
+
+// type Split<T extends string, SEP extends string = never> = T extends `${infer P}${SEP}${infer L}`
+//   ? [P, ...Split<L, SEP>]
+//   : T extends `${infer _}`
+//     ? T extends SEP ? [] : [T]
+//     : string []
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

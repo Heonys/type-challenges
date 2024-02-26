@@ -18,7 +18,15 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type DropString<S, R> = any
+type StringToUnion<T> = T extends `${infer F}${infer L}`
+  ? F | StringToUnion<L>
+  : never
+
+type DropString<S, R, U = StringToUnion<R>> = S extends `${infer First}${infer Rest}`
+  ? First extends U
+    ? `${DropString<Rest, R, U>}`
+    : `${First}${DropString<Rest, R, U>}`
+  : ''
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

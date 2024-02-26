@@ -8,7 +8,6 @@
   Implement a type DeepPick, that extends Utility types `Pick`.
   A type takes two arguments.
 
-
   For example:
 
   ```ts
@@ -36,7 +35,20 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type DeepPick = any
+type UnionToIntersection<T> = (T extends T
+  ? (args: T) => void
+  : never
+) extends (args: infer R) => void ? R : never
+
+type DeepPick<T, S extends string> = UnionToIntersection<S extends S
+  ? S extends `${infer First}.${infer Rest}`
+    ? First extends keyof T
+      ? { [K in First]: DeepPick<T[First], Rest> }
+      : never
+    : S extends keyof T
+      ? { [K in S]: T[K] }
+      : never
+  : never>
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
