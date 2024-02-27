@@ -20,7 +20,19 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type IsRequiredKey<T, K extends keyof T> = any
+// type RequiredKey<T> = {
+//   [K in keyof T as T[K] extends Required<T>[K] ? K : never ]: T[K]
+// }
+
+// type IsRequiredKey<T, S extends keyof T> =
+//   [S] extends [keyof RequiredKey<T>]
+//     ? true
+//     : false
+
+type IsRequiredKey<T, S extends keyof T> =
+  Pick<T, S> extends Required<Pick<T, S>>
+    ? true
+    : false
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

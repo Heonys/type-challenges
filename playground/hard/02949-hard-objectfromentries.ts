@@ -26,7 +26,20 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type ObjectFromEntries<T> = any
+// type UnionToIntersection<T> = (T extends T
+//   ? (args: T) => any
+//   : never
+// ) extends (args: infer R) => void
+//   ? R
+//   : never
+
+// type ObjectFromEntries<T extends any[], P = T[0]> = Omit<UnionToIntersection<T extends T
+//   ? { [K in keyof T as T[0] extends P ? T[0] : never ]: T[1] }
+//   : never>, never>
+
+type ObjectFromEntries<T extends any[]> = {
+  [K in T as K[0]]: K[1]
+}
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

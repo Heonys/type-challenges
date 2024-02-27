@@ -37,12 +37,25 @@ interface TreeNode {
   left: TreeNode | null
   right: TreeNode | null
 }
-type InorderTraversal<T extends TreeNode | null> = any
+// type InorderTraversal<T extends TreeNode | null> = T extends TreeNode
+//   ? T['left'] extends null
+//     ? T['right'] extends null
+//       ? [T['val']]
+//       : [T['val'], ...InorderTraversal<T['right']>]
+//     : InorderTraversal<T['left']>
+//   : []
+
+type InorderTraversal<
+  T extends TreeNode | null,
+  NT extends TreeNode = NonNullable<T>,
+> = T extends null
+  ? []
+  : [...InorderTraversal<NT['left']>, NT['val'], ...InorderTraversal<NT['right']> ]
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
 
-const tree1 = {
+const tree1 = <const> {
   val: 1,
   left: null,
   right: {
@@ -54,7 +67,7 @@ const tree1 = {
     },
     right: null,
   },
-} as const
+}
 
 const tree2 = {
   val: 1,
