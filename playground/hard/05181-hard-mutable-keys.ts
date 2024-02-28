@@ -19,7 +19,9 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type MutableKeys<T> = any
+type MutableKeys<T> = keyof {
+  [K in keyof T as Equal<Pick<T, K>, Readonly<Pick<T, K>>> extends true ? never : K ]: K
+}
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

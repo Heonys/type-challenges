@@ -18,7 +18,20 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type BinaryToDecimal<S extends string> = any
+type Reverse<T extends string> = T extends `${infer First}${infer Rest}`
+  ? `${Reverse<Rest>}${First}`
+  : ''
+
+type BinaryToDecimal<
+  S extends string,
+  R extends string = Reverse<S>,
+  Cur extends any[] = [1],
+  U extends any[] = [],
+> = R extends `${infer First}${infer Rest}`
+  ? First extends '1'
+    ? BinaryToDecimal<never, Rest, [...Cur, ...Cur], [...U, ...Cur]>
+    : BinaryToDecimal<never, Rest, [...Cur, ...Cur], U>
+  : U['length']
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

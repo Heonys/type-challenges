@@ -21,10 +21,23 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type ObjectKeyPaths<T extends object> = any
+type ObjectKeyPaths<T extends object> = T extends Record<string, any>
+  ? {
+      [K in keyof T]: T[K] extends Record<string, any>
+        ? K extends string
+          ? K | `${K}.${ObjectKeyPaths<T[K]>}`
+          : never
+        : K
+    }[keyof T]
+  : never
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect, ExpectExtends } from '@type-challenges/utils'
+
+const ref2 = {
+  count: 1,
+  books: ['book1', 'book2'],
+}
 
 const ref = {
   count: 1,
@@ -55,6 +68,7 @@ type cases = [
   Expect<ExpectExtends<ObjectKeyPaths<typeof ref>, 'person'>>,
   Expect<ExpectExtends<ObjectKeyPaths<typeof ref>, 'person.name'>>,
   Expect<ExpectExtends<ObjectKeyPaths<typeof ref>, 'person.age'>>,
+  Expect<ExpectExtends<ObjectKeyPaths<typeof ref>, 'books'>>,
   Expect<ExpectExtends<ObjectKeyPaths<typeof ref>, 'person.books'>>,
   Expect<ExpectExtends<ObjectKeyPaths<typeof ref>, 'person.pets'>>,
   Expect<ExpectExtends<ObjectKeyPaths<typeof ref>, 'person.books.0'>>,

@@ -19,7 +19,13 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type IsPalindrome<T> = any
+type IsPalindrome<T extends number | string> = `${T}` extends `${infer First}${infer Rest}`
+  ? Rest extends ''
+    ? true
+    : Rest extends `${infer Mid}${First}`
+      ? IsPalindrome<Mid>
+      : false
+  : true
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

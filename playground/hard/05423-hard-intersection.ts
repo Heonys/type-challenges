@@ -21,7 +21,9 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Intersection<T> = any
+type Intersection<T> = T extends [infer First, ...infer Rest]
+  ? (First extends any[] ? First[number] : First) & Intersection<Rest>
+  : unknown
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
