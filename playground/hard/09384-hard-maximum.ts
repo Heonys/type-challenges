@@ -28,7 +28,30 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Maximum<T extends any[]> = any
+// type NumberToTuple<T, R extends any[] = []> = R['length'] extends T
+//   ? R
+//   : NumberToTuple<T, [...R, 1]>
+
+// type Maximum<T extends any[], Max extends any[] = []> = T extends [infer First, ...infer Rest]
+//   ? Max extends [...NumberToTuple<First>, ...any]
+//     ? Maximum<Rest, Max>
+//     : Maximum<Rest, NumberToTuple<First>>
+//   : Max['length'] extends 0
+//     ? never
+//     : Max['length']
+
+type Maximum<
+  T extends any[],
+  U = T[number],
+  N extends any[] = [],
+> = T extends [] ? never
+  : Equal<U, N['length']> extends true
+    ? U
+    : T extends [number, ...infer Rest]
+      ? Rest['length'] extends 1
+        ? U
+        : Maximum<T, (U extends N['length'] ? never : U), [...N, 1]>
+      : never
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

@@ -25,7 +25,6 @@
   }
   ```
 
-
   ```ts
   type Target = {
     a: 'a'
@@ -38,7 +37,6 @@
     a: 'a1',
     b: 'b'
   }
-
 
   type Origin2 = {
     b: 'b2',
@@ -60,7 +58,14 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Assign<T extends Record<string, unknown>, U> = any
+type Assign<
+  T extends Record<string, unknown>,
+  U extends any[],
+> = Omit<U extends [infer First, ...infer Rest]
+  ? First extends '' | 0
+    ? Assign<T, Rest>
+    : Assign<Omit<T, keyof First> & First, Rest>
+  : T, never>
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

@@ -5,8 +5,6 @@
 
   ### 질문
 
-  Given an array of integers `nums` and an integer `target`, return true if two numbers such that they add up to `target`.
-
   For example
 
   ```ts
@@ -19,7 +17,38 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type TwoSum<T extends number[], U extends number> = any
+type NumberToTuple<T, R extends any[] = []> = R['length'] extends T
+  ? R
+  : NumberToTuple<T, [...R, 1]>
+
+type MappingBy<T extends any[], R extends number> = {
+  [K in keyof T]: [...NumberToTuple<T[K]>, ...NumberToTuple<R>]['length']
+}
+type Includes<T extends any[], S> = S extends T[number] ? true : false
+
+type SubTwoSum<
+  T extends number[],
+  U extends number,
+> = T extends [infer First extends number, ...infer Rest extends number[]]
+  ? [...MappingBy<Rest, First>, ...SubTwoSum<Rest, U>]
+  : []
+
+type TwoSum< T extends number[], U extends number> = Includes<SubTwoSum<T, U>, U>
+
+// type NumberToTuple<T extends number, R extends any[] = []> = R['length'] extends T
+//   ? R
+//   : NumberToTuple<T, [...R, 1 ]>
+
+// type TwoSum<
+//   T extends number[],
+//   U extends number,
+// > = T extends [infer First extends number, ...infer Rest extends number[]]
+//   ? NumberToTuple<U> extends [...NumberToTuple<First>, ...infer R]
+//     ? R['length'] extends Rest[number]
+//       ? true
+//       : TwoSum<Rest, U>
+//     : false
+//   : false
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
