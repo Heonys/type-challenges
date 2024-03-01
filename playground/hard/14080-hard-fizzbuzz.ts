@@ -26,7 +26,40 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type FizzBuzz<N extends number> = any
+type NumberToTuple<T, R extends any[] = []> = R['length'] extends T
+  ? R
+  : NumberToTuple<T, [...R, 1]>
+
+type Divison3<T extends any[]> = T extends [1, 1, 1, ...infer Rest]
+  ? Rest['length'] extends 0
+    ? true
+    : Rest['length'] extends 1 | 2
+      ? false
+      : Divison3<Rest>
+  : false
+
+type Divison5<T extends any[]> = T extends [1, 1, 1, 1, 1, ...infer Rest]
+  ? Rest['length'] extends 0
+    ? true
+    : Rest['length'] extends 1 | 2 | 3 | 4
+      ? false
+      : Divison5<Rest>
+  : false
+
+type FizzBuzz<
+  N extends number,
+  U extends number[] = NumberToTuple<N>,
+  Cur extends any[] = [1],
+  R extends any[] = [],
+> = Cur extends [...U, 1]
+  ? R
+  : Divison3<Cur> extends true
+    ? Divison5<Cur> extends true
+      ? FizzBuzz<N, U, [...Cur, 1], [...R, 'FizzBuzz']>
+      : FizzBuzz<N, U, [...Cur, 1], [...R, 'Fizz']>
+    : Divison5<Cur> extends true
+      ? FizzBuzz<N, U, [...Cur, 1], [...R, 'Buzz']>
+      : FizzBuzz<N, U, [...Cur, 1], [...R, `${Cur['length']}`]>
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

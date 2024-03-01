@@ -12,7 +12,11 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type CapitalizeNestObjectKeys<T> = any
+type CapitalizeNestObjectKeys<T> = T extends any[]
+  ? T extends [infer First, ...infer Rest]
+    ? [CapitalizeNestObjectKeys<First>, ...CapitalizeNestObjectKeys<Rest>]
+    : []
+  : { [K in keyof T as Capitalize<K & string>]: CapitalizeNestObjectKeys<T[K]> }
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

@@ -12,7 +12,11 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type UnionReplace<T, U extends [any, any][]> = any
+type UnionReplace<T, U extends [any, any][]> = U extends [[infer R1, infer R2], ...infer Rest extends [any, any][]]
+  ? R1 extends T
+    ? UnionReplace<Exclude<T, R1> | R2, Rest>
+    : UnionReplace<T, Rest>
+  : T
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
