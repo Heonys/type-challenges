@@ -20,7 +20,11 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type SnakeCase<T> = any
+type SnakeCase<T, R extends string = ''> = T extends `${infer First}${infer Rest}`
+  ? Uppercase<First> extends First
+    ? SnakeCase<Rest, `${R}_${Lowercase<First>}`>
+    : SnakeCase<Rest, `${R}${First}`>
+  : R
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

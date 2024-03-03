@@ -22,7 +22,17 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type IsNegativeNumber<T extends number> = any
+type IsUnion<T, S = T> = T extends T
+  ? [S] extends [T] ? false : true
+  : never
+
+type IsNegativeNumber<T extends number> = number extends T
+  ? never
+  : IsUnion<T> extends true
+    ? never
+    : `${T}` extends `-${number}`
+      ? true
+      : false
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

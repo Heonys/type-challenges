@@ -20,7 +20,16 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type OptionalUndefined<T, Props> = any
+type Merge<T, S> = Omit<Omit<T, keyof S> & S, never>
+
+type OptionalUndefined<T, Props = never> = [Props] extends [never]
+  ? Merge<T, { [K in keyof T as undefined extends T[K] ? K : never ]?: T[K] }>
+  : Merge<T, {
+    [K in keyof T as Props extends K
+      ? undefined extends T[K] ? K : never
+      : never
+    ]?: T[K]
+  }>
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

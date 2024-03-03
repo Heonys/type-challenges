@@ -14,8 +14,34 @@
 /* _____________ 여기에 코드 입력 _____________ */
 
 namespace RLE {
-  export type Encode<S extends string> = any
-  export type Decode<S extends string> = any
+  export type Encode<
+  S extends string,
+  Count extends any[] = [],
+  Prev extends string = S extends `${infer First}${string}` ? First : never,
+  R extends string = '',
+> = S extends `${infer First}${infer Rest}`
+  ? First extends Prev
+    ? Encode<Rest, [...Count, 1], Prev, R>
+    : Encode<Rest, [1], First, `${R}${Count['length'] extends 1 ? '' : Count['length']}${Prev}`>
+  : `${R}${Count['length'] extends 1 ? '' : Count['length']}${Prev}`
+
+  type Repeat<
+    T extends string,
+    U extends number,
+    Cur extends any[] = [1],
+    R extends string = T,
+  > = Cur['length'] extends U
+    ? R
+    : Repeat<T, U, [...Cur, 1], `${R}${T}`>
+
+  export type Decode<
+    S extends string,
+    R extends string = '',
+  > = S extends `${infer Fisrt}${infer Second}${infer Rest}`
+    ? Fisrt extends `${infer N extends number}`
+      ? Decode<Rest, `${R}${Repeat<Second, N>}`>
+      : Decode<`${Second}${Rest}`, `${R}${Fisrt}`>
+    : `${R}${S}`
 }
 
 /* _____________ 테스트 케이스 _____________ */

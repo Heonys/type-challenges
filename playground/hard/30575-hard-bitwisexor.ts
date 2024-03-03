@@ -20,7 +20,20 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type BitwiseXOR<S1 extends string, S2 extends string> = any
+type Reverse<T extends string> = T extends `${infer F}${infer Rest}` ? `${Reverse<Rest>}${F}` : ''
+type BitwiseXOR<S1 extends string, S2 extends string> = Computed<Reverse<S1>, Reverse<S2>>
+
+type Computed<
+  S1 extends string,
+  S2 extends string,
+  R extends string = '',
+> = S1 extends `${infer F1}${infer R1}`
+  ? S2 extends `${infer F2}${infer R2}`
+    ? [F1, F2] extends ['1', '1'] | ['0', '0']
+        ? Computed<R1, R2, `0${R}`>
+        : Computed<R1, R2, `1${R}`>
+    : `${S1}${R}`
+  : `${S2}${R}`
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
