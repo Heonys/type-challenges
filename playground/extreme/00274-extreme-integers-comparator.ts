@@ -18,13 +18,64 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
+// type NumberToTuple<T, R extends any[] = []> = R['length'] extends T
+//   ? R
+//   : NumberToTuple<T, [...R, 1]>
+
+// type Comparator<A extends number, B extends number> = A extends B
+//   ? Comparison.Equal
+//   : `${A}` extends `-${infer F1 extends number}`
+//     ? `${B}` extends `-${infer F2 extends number}`
+//       ? Comparator<F2, F1>
+//       : Comparison.Lower
+//     : `${B}` extends `-${number}`
+//       ? Comparison.Greater
+//       : NumberToTuple<A> extends [...NumberToTuple<B>, ...any]
+//         ? Comparison.Greater
+//         : Comparison.Lower
+
 enum Comparison {
   Greater,
   Equal,
   Lower,
 }
 
-type Comparator<A extends number, B extends number> = any
+type CompareDigits<A extends string, B extends string>
+= A extends B
+  ? Comparison.Equal
+  : '0123456789' extends `${string}${A}${string}${B}${string}`
+    ? Comparison.Lower
+    : Comparison.Greater
+
+type CompareLength<A extends string, B extends string> = A extends `${string}${infer R1}`
+  ? B extends `${string}${infer R2}`
+    ? CompareLength<R1, R2>
+    : Comparison.Greater
+  : B extends `${string}${infer _}`
+    ? Comparison.Lower
+    : Comparison.Equal
+
+type Compare<A extends string, B extends string> = CompareLength<A, B> extends Comparison.Equal
+  ? `${A}` extends `${infer F1}${infer R1}`
+    ? `${B}` extends `${infer F2}${infer R2}`
+      ? F1 extends F2
+        ? Compare<R1, R2>
+        : CompareDigits<F1, F2>
+      : never
+    : `${B}` extends `${infer _}${infer _}`
+      ? never
+      : CompareDigits<A, B>
+  : CompareLength<A, B>
+
+type Comparator<A extends number, B extends number> = A extends B
+  ? Comparison.Equal
+  : `${A}` extends `-${infer F1}`
+    ? `${B}` extends `-${infer F2}`
+      ? Compare<F2, F1> // 둘다 음수
+      : Comparison.Lower
+    : `${B}` extends `-${number}`
+      ? Comparison.Greater
+      : Compare<`${A}`, `${B}`> // 둘다 양수
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

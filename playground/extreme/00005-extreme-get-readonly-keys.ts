@@ -24,7 +24,9 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type GetReadonlyKeys<T> = any
+type GetReadonlyKeys<T> = keyof {
+  [K in keyof T as Equal<Pick<T, K>, Readonly<Pick<T, K>>> extends true ? K : never ]: T[K]
+}
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
