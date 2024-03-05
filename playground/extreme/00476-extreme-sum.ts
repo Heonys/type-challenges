@@ -21,7 +21,50 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Sum<A extends string | number | bigint, B extends string | number | bigint> = string
+type PaeseInt<T extends string> = T extends `${infer F extends number}` ? F : never
+
+type NumberToTuple<
+  T extends string,
+  R extends any[] = [],
+> = R['length'] extends PaeseInt<T> ? R : NumberToTuple<T, [...R, 1]>
+
+type StringToTuple<T extends string> = T extends `${infer F}${infer R}` ? [F, ...StringToTuple<R>] : []
+
+type Reverse<T extends string> = `${T}` extends `${infer F}${infer R}` ? `${Reverse<R>}${F}` : ''
+
+type Computed<T extends string, U extends string, Carry extends string = '0'> = `${T}${U}` extends `${infer R1}${infer R2}`
+  ? StringToTuple<`${[...NumberToTuple<R1>, ...NumberToTuple<R2>, ...NumberToTuple<Carry>]['length'] & number}`>
+  : never
+
+type ReversedSum<
+  A extends string,
+  B extends string,
+  Carry extends string = '',
+  S extends string = '',
+> = A extends `${infer F1}${infer R1}`
+  ? B extends `${infer F2}${infer R2}`
+    ? Carry extends ''
+      ? Computed<F1, F2> extends [infer X extends string, infer Y extends string]
+        ? ReversedSum<R1, R2, X, `${Y}${S}`>
+        : Computed<F1, F2> extends [infer X extends string]
+          ? ReversedSum<R1, R2, '', `${X}${S}`>
+          : never
+      : Computed<F1, F2, Carry> extends [infer X extends string, infer Y extends string]
+        ? ReversedSum<R1, R2, X, `${Y}${S}`>
+        : Computed<F1, F2, Carry> extends [infer X extends string]
+          ? ReversedSum<R1, R2, '', `${X}${S}`>
+          : never
+    : Carry extends ''
+      ? `${Reverse<A>}${S}`
+      : ReversedSum<A, '0', Carry, S>
+  : B extends `${infer _}${infer _}`
+    ? ReversedSum<B, A, Carry, S>
+    : `${Carry}${S}`
+
+type Sum<
+  A extends string | number | bigint,
+  B extends string | number | bigint,
+> = ReversedSum<Reverse<`${A}`>, Reverse<`${B}`>>
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

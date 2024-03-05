@@ -19,7 +19,53 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Slice<Arr, Start, End> = any
+// type NumberToTuple<T, R extends any[] = []> = R['length'] extends T
+//   ? R
+//   : NumberToTuple<T, [...R, 1]>
+
+// type Slice<
+//   Arr extends any[],
+//   Start extends number = 0,
+//   End extends number = [...Arr, 1]['length'],
+//   Cur extends any[] = [],
+//   R extends any[] = [],
+// > = End extends 0
+//   ? []
+//   : `${Start}` extends `-${infer Digit extends number}`
+//     ? NumberToTuple<Digit> extends [...infer R, 1]
+//       ? Slice<Arr, R['length'], End>
+//       : never
+//     : `${End}` extends `-${infer Digit extends number}`
+//       ? NumberToTuple<Arr['length']> extends [...infer R, ...NumberToTuple<Digit>]
+//         ? Slice<Arr, Start, R['length']>
+//         : never
+//       : NumberToTuple<Start> extends [...Cur, ...infer _]
+//         ? Start extends Cur['length']
+//           ? Arr extends [infer First, ...infer Rest]
+//             ? Slice<Rest, Start, End, [...Cur, 1], [...R, First]>
+//             : R
+//           : Arr extends [number, ...infer Rest]
+//             ? Slice<Rest, Start, End, [...Cur, 1], R>
+//             : R
+//         : Cur['length'] extends End
+//           ? R
+//           : Arr extends [infer First, ...infer Rest]
+//             ? Slice<Rest, Start, End, [...Cur, 1], [...R, First]>
+//             : R
+
+type ToPositive<Arr extends any[], N extends number> = `${N}` extends `-${infer F extends number}`
+  ? Slice<Arr, F>['length']
+  : N
+
+type GetElementByN<Arr extends any[], N extends number, R extends any[] = []> =
+  R['length'] extends N | Arr['length']
+    ? R
+    : GetElementByN<Arr, N, [...R, Arr[R['length']]]>
+
+type Slice<Arr extends any[], Start extends number = 0, End extends number = Arr['length']> =
+  GetElementByN<Arr, ToPositive<Arr, End>> extends [...GetElementByN<Arr, ToPositive<Arr, Start>>, ...infer R]
+    ? R
+    : []
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

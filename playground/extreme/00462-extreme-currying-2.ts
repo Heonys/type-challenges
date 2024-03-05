@@ -38,7 +38,18 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-declare function DynamicParamsCurrying(fn: any): any
+// Extract elements from array T excluding elements from array U.
+type RestParemeters<T extends any[], U extends any[]> =
+  T extends [...U, ...infer R] ? R : never
+
+type Currying<
+  T extends (...args: any[]) => any,
+  P extends any[] = Parameters<T>,
+> = P['length'] extends 0
+  ? ReturnType<T>
+  : <S extends any[]>(...args: S) => Currying<(...args: RestParemeters<P, S>) => ReturnType<T>>
+
+declare function DynamicParamsCurrying<T extends (...args: any[]) => any>(fn: T): Currying<T>
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
