@@ -18,7 +18,23 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type InclusiveRange<Lower extends number, Higher extends number> = any
+type InclusiveRange<
+  Lower extends number,
+  Higher extends number,
+  Cur extends any[] = [],
+  R extends any[] = [],
+  Start extends boolean = false,
+> = Lower extends Higher
+  ? [Lower]
+  : [Cur['length'], Start] extends [Higher, true]
+      ? [...R, Cur['length']]
+      : Cur['length'] extends Lower
+        ? InclusiveRange<Lower, Higher, [...Cur, 1], [...R, Cur['length']], true >
+        : Start extends true
+          ? InclusiveRange<Lower, Higher, [...Cur, 1], [...R, Cur['length']], true >
+          : [Cur['length'], Start] extends [Higher, false]
+              ? []
+              : InclusiveRange<Lower, Higher, [...Cur, 1], R, Start>
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

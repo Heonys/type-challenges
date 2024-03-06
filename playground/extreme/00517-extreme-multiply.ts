@@ -25,7 +25,40 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Multiply<A extends string | number | bigint, B extends string | number | bigint> = string
+type Reverse<T extends string> = `${T}` extends `${infer F}${infer R}` ? `${Reverse<R>}${F}` : ''
+
+type NextNumber = { '0': '1', '1': '2', '2': '3', '3': '4', '4': '5', '5': '6', '6': '7', '7': '8', '8': '9' }
+type PrevNumber = { [K in keyof NextNumber as NextNumber[K] ]: K }
+
+type PlusOne<T extends string> = T extends `${infer First}${infer Rest}`
+  ? First extends '9'
+    ? `0${PlusOne<Rest>}`
+    : `${NextNumber[First & keyof NextNumber]}${Rest}`
+  : '1'
+
+type MinusOne<T extends string> = T extends `${infer First}${infer Rest}`
+  ? First extends '0'
+    ? `9${MinusOne<Rest>}`
+    : `${PrevNumber[First & keyof PrevNumber]}${Rest}`
+  : never
+
+type Add<A, B > = A extends `${infer F1}${infer R1}`
+  ? B extends `${infer F2}${infer R2}`
+    ? F2 extends '0' ? `${F1}${Add<R1, R2>}` : Add<PlusOne<A>, MinusOne<B>>
+    : A : B
+
+type ReversedMultiply< A extends string, B extends string, R = '0'>
+  = A extends '0' ? R : B extends '0' ? R
+    : A extends `${infer First}${infer Rest}`
+      ? First extends '0'
+        ? ReversedMultiply<Rest, `0${B}`, R>
+        : ReversedMultiply<MinusOne<A>, B, Add<R, B>>
+      : R
+
+type Multiply<
+  A extends string | number | bigint,
+  B extends string | number | bigint,
+> = Reverse<ReversedMultiply<Reverse<`${A}`>, Reverse<`${B}`>>>
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
