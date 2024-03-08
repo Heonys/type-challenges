@@ -30,7 +30,23 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type Sort = any
+type Reverse<T extends any[]> = T extends [infer F, ...infer R] ? [...Reverse<R>, F] : []
+
+type ExtractElement<T extends any[], U extends number, R extends any[] = []>
+  = T extends [infer First, ...infer Rest]
+    ? First extends U
+      ? ExtractElement<Rest, U, [...R, First]>
+      : ExtractElement<Rest, U, R>
+    : R
+
+type Sort<T extends any[], S = false, U = T[number], Cur extends any[] = [], R extends any[] = []>
+   = [U] extends [never]
+     ? R
+     : S extends false
+       ? Cur['length'] extends U
+         ? Sort<T, S, Exclude<U, Cur['length']>, [...Cur, 1], [...R, ...ExtractElement<T, Cur['length']>]>
+         : Sort<T, S, U, [...Cur, 1], R>
+       : Reverse<Sort<T, false>>
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

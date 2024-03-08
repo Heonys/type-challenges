@@ -44,8 +44,46 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
-type DistributeUnions<T> = any
+// type DistributeArray<T> = T extends [infer First, ...infer Rest]
+//   ? First extends First
+//     ? [First, ...DistributeArray<Rest>]
+//     : never
+//   : []
 
+// type DistributeObject<T> = any
+
+// type DistributeUnions<T> = T extends object
+//   ? T extends any[]
+//     ? DistributeArray<T>
+//     : DistributeObject<T>
+//   : T
+
+type DistributeUnions<T>
+  = T extends unknown[] ? DistributeArray<T>
+    : T extends object ? Merge<DistributeObject<T>>
+      : T
+
+type DistributeArray<A extends unknown[]>
+  = A extends [infer H, ...infer T]
+    ? ArrHelper<DistributeUnions<H>, T>
+    : []
+
+type ArrHelper<H, T extends unknown[]> = H extends H
+  ? [H, ...DistributeArray<T>]
+  : never
+
+type DistributeObject<O extends object, K extends keyof O = keyof O>
+  = [K] extends [never]
+    ? {}
+    : K extends K
+      ? ObjHelper<K, DistributeUnions<O[K]>> & DistributeObject<Omit<O, K>>
+      : never
+
+type ObjHelper<K, V> = V extends V
+  ? { [k in K & string]: V }
+  : never
+
+type Merge<O> = { [K in keyof O]: O[K] }
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
 
