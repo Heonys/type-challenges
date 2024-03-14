@@ -23,8 +23,42 @@
 
 /* _____________ 여기에 코드 입력 _____________ */
 
+type ParseInt<T> = T extends `${infer R extends number}` ? R : T
+
+type RemoveZero<T> = T extends '0'
+  ? T
+  : T extends `${infer F}${infer R}` ? F extends '0' ? RemoveZero<R> : T : T
+
+type Reverse<T> = T extends `${infer F}${infer R}`
+  ? `${Reverse<R>}${F}`
+  : ''
+
+type NextNumber = { '0': '1', '1': '2', '2': '3', '3': '4', '4': '5', '5': '6', '6': '7', '7': '8', '8': '9' }
+
+type PlusOne<T extends string> = T extends `${infer F}${infer R}`
+  ? F extends '9'
+    ? `0${PlusOne<R>}`
+    : `${NextNumber[F & keyof NextNumber]}${R}`
+  : '1'
+
+type ReversedSubtract<
+  M extends string,
+  S extends string,
+> = `${M}` extends `${infer F1}${infer R1}`
+  ? `${S}` extends `${infer F2}${infer R2}`
+    ? F1 extends F2
+      ? `0${ReversedSubtract<R1, R2>}`
+      : F2 extends '0'
+        ? `${F1}${ReversedSubtract<R1, R2>}`
+        : ReversedSubtract<PlusOne<M>, PlusOne<S>>
+    : ''
+  : `${S}` extends `${infer _}${infer _}` ? never : M
+
 // M => minuend, S => subtrahend
-type Subtract<M extends number, S extends number> = any
+type Subtract<
+  M extends number,
+  S extends number,
+> = ParseInt<RemoveZero<Reverse<ReversedSubtract<Reverse<`${M}`>, Reverse<`${S}`>>>>>
 
 /* _____________ 테스트 케이스 _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
@@ -33,8 +67,8 @@ type cases = [
   Expect<Equal<Subtract<1, 1>, 0>>,
   Expect<Equal<Subtract<2, 1>, 1>>,
   Expect<Equal<Subtract<1, 2>, never>>,
-  // @ts-expect-error
   Expect<Equal<Subtract<1000, 999>, 1>>,
+  Expect<Equal<Subtract<10000, 9999>, 1>>,
 ]
 
 /* _____________ 다음 단계 _____________ */
